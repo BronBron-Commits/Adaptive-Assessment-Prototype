@@ -1,0 +1,249 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(88, 166, 255, 0.18), transparent 32rem),
+    #0b1020;
+  color: #f8fafc;
+}
+
+button {
+  font: inherit;
+}
+
+.app {
+  min-height: 100vh;
+  padding: 24px;
+  display: grid;
+  place-items: center;
+}
+
+.shell {
+  width: min(980px, 100%);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: #93c5fd;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+h1, h2, h3, p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0;
+  font-size: clamp(1.7rem, 4vw, 3rem);
+}
+
+h2 {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+}
+
+.card {
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 24px;
+  padding: clamp(20px, 4vw, 36px);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+}
+
+.hero p {
+  max-width: 720px;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0;
+}
+
+.meta span {
+  border: 1px solid rgba(147, 197, 253, 0.35);
+  color: #bfdbfe;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.timer {
+  min-width: 78px;
+  text-align: center;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(34, 197, 94, 0.12);
+  color: #bbf7d0;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  font-weight: 800;
+}
+
+.timer.danger {
+  background: rgba(239, 68, 68, 0.14);
+  color: #fecaca;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+.sectionHeader p {
+  color: #cbd5e1;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.stack {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.choice {
+  width: 100%;
+  min-height: 84px;
+  text-align: left;
+  background: rgba(30, 41, 59, 0.8);
+  color: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 18px;
+  padding: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.choice:hover {
+  border-color: rgba(147, 197, 253, 0.75);
+}
+
+.choice.selected {
+  background: rgba(37, 99, 235, 0.22);
+  border-color: #93c5fd;
+}
+
+.choice small {
+  color: #93c5fd;
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.actions button,
+.hero button {
+  border: 0;
+  border-radius: 14px;
+  padding: 12px 18px;
+  background: #60a5fa;
+  color: #06111f;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.actions .secondary {
+  background: rgba(148, 163, 184, 0.18);
+  color: #e2e8f0;
+}
+
+.scoreBox {
+  margin: 20px 0;
+  padding: 22px;
+  border-radius: 20px;
+  background: rgba(96, 165, 250, 0.12);
+  border: 1px solid rgba(96, 165, 250, 0.28);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scoreBox strong {
+  font-size: 3rem;
+}
+
+.feedbackGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.feedbackItem {
+  color: #cbd5e1;
+  background: rgba(30, 41, 59, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  padding: 14px;
+  border-radius: 16px;
+  line-height: 1.5;
+}
+
+.feedbackItem b {
+  color: #f8fafc;
+}
+
+@media (max-width: 720px) {
+  .app {
+    padding: 14px;
+  }
+
+  .topbar,
+  .sectionHeader,
+  .scoreBox {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .grid,
+  .feedbackGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .choice {
+    min-height: 72px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions button,
+  .hero button {
+    width: 100%;
+  }
+}
