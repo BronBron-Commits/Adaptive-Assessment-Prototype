@@ -1,16 +1,21 @@
-# React + Vite
+# Adaptive Assessment Prototype
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive, rule-based evaluation system for testing decision-making under uncertainty.
 
-Currently, two official plugins are available:
+## Features
+- Multi-scenario support
+- Adaptive information gathering
+- Time-constrained decisions
+- Rule-based scoring + feedback
+- Confidence analysis
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Purpose
+Prototype exploration of assessment design and interaction systems.
 
-## React Compiler
+## Tech
+- React (Vite)
+- Client-side state system
+- Rule-based scoring engine
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Notes
+This project explores how user interaction, uncertainty, and information gathering influence decision quality in assessment-style systems.

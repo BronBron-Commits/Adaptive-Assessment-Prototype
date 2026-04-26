@@ -123,6 +123,11 @@ function App() {
     .sort((a, b) => b.value - a.value)
     .slice(0, 2);
 
+  const revealedInfo = selectedClues.map(id => {
+    const clue = caseData.clues.find(c => c.id === id);
+    return clue ? clue.label : null;
+  });
+
   function begin() {
     setStarted(true);
     setScreen("gather");
@@ -197,6 +202,11 @@ function App() {
         {screen === "decision" && (
           <section className="card">
             <h2>Decision</h2>
+
+            <h3>Information gathered</h3>
+            {revealedInfo.map((info, i) => (
+              <p key={i} className="feedbackItem">{info}</p>
+            ))}
             {caseData.decisions.map((d) => (
               <button
                 key={d.id}
