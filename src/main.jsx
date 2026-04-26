@@ -2,85 +2,88 @@ import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
 
-const caseData = {
-  title: "Case 01: Acute Symptoms",
-  subtitle: "Adaptive Assessment Prototype",
-  timeLimitSeconds: 90,
-  prompt:
-    "A 42-year-old patient reports chest discomfort, dizziness, and shortness of breath. Gather information, make a decision, and review your reasoning.",
-  maxClues: 3,
-  clues: [
-    {
-      id: "vitals",
-      label: "Check vital signs",
-      value: 30,
-      feedback: "Vital signs are essential for identifying urgency."
-    },
-    {
-      id: "pain_location",
-      label: "Ask about pain location",
-      value: 25,
-      feedback: "Pain location helps clarify severity and possible causes."
-    },
-    {
-      id: "medications",
-      label: "Ask about current medications",
-      value: 20,
-      feedback: "Medication history can reveal risks or interactions."
-    },
-    {
-      id: "recent_meals",
-      label: "Ask about recent meals",
-      value: 5,
-      feedback: "Recent meals may be relevant, but it is lower priority here."
-    },
-    {
-      id: "family_history",
-      label: "Ask about family history",
-      value: 10,
-      feedback: "Family history adds context but is not the most urgent first step."
-    },
-    {
-      id: "neuro_exam",
-      label: "Perform neurological exam",
-      value: 10,
-      feedback: "A neurological exam may matter, but other information is higher priority first."
-    }
-  ],
-  decisions: [
-    {
-      id: "escalate",
-      label: "Order immediate evaluation",
-      value: 40,
-      feedback: "Appropriate escalation based on the symptom pattern."
-    },
-    {
-      id: "monitor",
-      label: "Monitor and reassess later",
-      value: 15,
-      feedback: "Monitoring alone may delay needed evaluation."
-    },
-    {
-      id: "rest",
-      label: "Recommend rest and hydration",
-      value: 5,
-      feedback: "This underestimates the seriousness of the presentation."
-    },
-    {
-      id: "discharge",
-      label: "Discharge with instructions",
-      value: 0,
-      feedback: "This is premature based on the symptoms."
-    }
-  ]
-};
+const cases = [
+  {
+    id: "case1",
+    title: "Case 01: Acute Symptoms",
+    subtitle: "Adaptive Assessment Prototype",
+    timeLimitSeconds: 90,
+    prompt:
+      "A 42-year-old patient reports chest discomfort, dizziness, and shortness of breath.",
+    maxClues: 3,
+    clues: [
+      { id: "vitals", label: "Check vital signs", value: 30, feedback: "Vital signs are essential for identifying urgency." },
+      { id: "pain_location", label: "Ask about pain location", value: 25, feedback: "Pain location helps clarify severity." },
+      { id: "medications", label: "Ask about current medications", value: 20, feedback: "Medication history can reveal risks." },
+      { id: "family_history", label: "Ask about family history", value: 10, feedback: "Family history adds context." }
+    ],
+    decisions: [
+      { id: "escalate", label: "Order immediate evaluation", value: 40, feedback: "Correct escalation." },
+      { id: "monitor", label: "Monitor and reassess", value: 15, feedback: "Too passive." }
+    ]
+  },
+  {
+    id: "case2",
+    title: "Case 02: Mild Symptoms",
+    subtitle: "Adaptive Assessment Prototype",
+    timeLimitSeconds: 90,
+    prompt:
+      "A 25-year-old patient reports mild headache and fatigue after a long day.",
+    maxClues: 3,
+    clues: [
+      { id: "sleep", label: "Ask about sleep", value: 25, feedback: "Sleep is highly relevant." },
+      { id: "hydration", label: "Ask about hydration", value: 20, feedback: "Hydration impacts fatigue." },
+      { id: "stress", label: "Ask about stress levels", value: 20, feedback: "Stress can explain symptoms." },
+      { id: "neuro", label: "Perform neurological exam", value: 5, feedback: "Low priority here." }
+    ],
+    decisions: [
+      { id: "rest", label: "Recommend rest", value: 35, feedback: "Appropriate for mild symptoms." },
+      { id: "escalate", label: "Order imaging", value: 5, feedback: "Overreaction." }
+    ]
+  },
+  {
+    id: "case3",
+    title: "Case 03: Ambiguous Symptoms",
+    subtitle: "Adaptive Assessment Prototype",
+    timeLimitSeconds: 90,
+    prompt:
+      "A 58-year-old patient reports nausea, sweating, and vague upper abdominal discomfort. The symptoms began one hour ago and are difficult to describe.",
+    maxClues: 3,
+    clues: [
+      { id: "vitals", label: "Check vital signs", value: 28, feedback: "Vital signs help identify instability even when symptoms are vague." },
+      { id: "risk", label: "Ask about cardiac risk factors", value: 26, feedback: "Risk factors matter because serious conditions may present atypically." },
+      { id: "onset", label: "Clarify onset and progression", value: 22, feedback: "Timing helps separate urgent patterns from minor causes." },
+      { id: "diet", label: "Ask about recent meals", value: 8, feedback: "Diet may explain discomfort but should not dominate the assessment." },
+      { id: "stress", label: "Ask about stress at work", value: 10, feedback: "Stress is useful context but does not rule out urgent causes." },
+      { id: "hydration", label: "Ask about hydration", value: 6, feedback: "Hydration is lower priority for this symptom pattern." }
+    ],
+    decisions: [
+      { id: "urgent_eval", label: "Escalate for urgent evaluation", value: 38, feedback: "Strong choice because vague symptoms can still indicate serious risk." },
+      { id: "observe", label: "Observe for 30 minutes", value: 18, feedback: "Observation may delay appropriate evaluation." },
+      { id: "antacid", label: "Treat as indigestion", value: 8, feedback: "This assumes a benign cause too early." },
+      { id: "discharge", label: "Discharge with lifestyle advice", value: 0, feedback: "This misses the uncertainty and possible risk." }
+    ]
+
+  }
+];
 
 function App() {
+  const [caseIndex, setCaseIndex] = useState(0);
+  const caseData = cases[caseIndex];
+
   const [screen, setScreen] = useState("intro");
   const [selectedClues, setSelectedClues] = useState([]);
   const [decision, setDecision] = useState(null);
   const [secondsLeft, setSecondsLeft] = useState(caseData.timeLimitSeconds);
   const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    setSecondsLeft(caseData.timeLimitSeconds);
+    setSelectedClues([]);
+    setDecision(null);
+    setScreen("intro");
+    setStarted(false);
+  }, [caseIndex]);
 
   useEffect(() => {
     if (!started || screen === "feedback") return;
@@ -110,12 +113,15 @@ function App() {
 
     let total = Math.floor((clueScore * 0.6) + (decisionScore * 0.4));
 
-    if (selectedClues.length < 2) {
-      total -= 10;
-    }
+    if (selectedClues.length < 2) total -= 10;
 
     return Math.max(0, Math.min(100, total));
-  }, [selectedClues, decision]);
+  }, [selectedClues, decision, caseData]);
+
+  const missedClues = caseData.clues
+    .filter((c) => !selectedClues.includes(c.id))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 2);
 
   function begin() {
     setStarted(true);
@@ -129,11 +135,6 @@ function App() {
       return [...current, id];
     });
   }
-
-  const missedClues = caseData.clues
-    .filter((clue) => !selectedClues.includes(clue.id))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 2);
 
   function reset() {
     setScreen("intro");
@@ -152,6 +153,17 @@ function App() {
             <h1>{caseData.title}</h1>
           </div>
 
+          <select
+            value={caseIndex}
+            onChange={(e) => setCaseIndex(Number(e.target.value))}
+          >
+            {cases.map((c, i) => (
+              <option key={c.id} value={i}>
+                {c.title}
+              </option>
+            ))}
+          </select>
+
           {started && (
             <div className={secondsLeft <= 15 ? "timer danger" : "timer"}>
               {secondsLeft}s
@@ -160,151 +172,61 @@ function App() {
         </header>
 
         {screen === "intro" && (
-          <section className="card hero">
-            <h2>Interactive decision-making prototype</h2>
+          <section className="card">
             <p>{caseData.prompt}</p>
-            <div className="meta">
-              <span>{caseData.timeLimitSeconds}s timer</span>
-              <span>Choose up to {caseData.maxClues} clues</span>
-              <span>Rule-based scoring</span>
-            </div>
-            <button onClick={begin}>Begin Assessment</button>
+            <button onClick={begin}>Begin</button>
           </section>
         )}
 
         {screen === "gather" && (
           <section className="card">
-            <div className="sectionHeader">
-              <div>
-                <h2>Gather information</h2>
-                <p>Select up to {caseData.maxClues} information-gathering actions.</p>
-              </div>
-              <strong>
-                {selectedClues.length}/{caseData.maxClues}
-              </strong>
-            </div>
-
-            <div className="grid">
-              {caseData.clues.map((clue) => (
-                <button
-                  key={clue.id}
-                  className={
-                    selectedClues.includes(clue.id)
-                      ? "choice selected"
-                      : "choice"
-                  }
-                  onClick={() => toggleClue(clue.id)}
-                >
-                  <span>{clue.label}</span>
-                  <small>{clue.value} pts</small>
-                </button>
-              ))}
-            </div>
-
-            <div className="actions">
+            <h2>Gather Info</h2>
+            {caseData.clues.map((c) => (
               <button
-                disabled={selectedClues.length === 0}
-                onClick={() => setScreen("decision")}
+                key={c.id}
+                onClick={() => toggleClue(c.id)}
+                className={selectedClues.includes(c.id) ? "choice selected" : "choice"}
               >
-                Continue to Decision
+                {c.label}
               </button>
-            </div>
+            ))}
+            <button onClick={() => setScreen("decision")}>Next</button>
           </section>
         )}
 
         {screen === "decision" && (
           <section className="card">
-            <h2>Choose next best step</h2>
-            <p>Your selected information will affect the quality score.</p>
-
-            <div className="stack">
-              {caseData.decisions.map((item) => (
-                <button
-                  key={item.id}
-                  className={decision === item.id ? "choice selected" : "choice"}
-                  onClick={() => setDecision(item.id)}
-                >
-                  <span>{item.label}</span>
-                  <small>{item.value} pts</small>
-                </button>
-              ))}
-            </div>
-
-            <div className="actions">
-              <button onClick={() => setScreen("gather")} className="secondary">
-                Back
-              </button>
+            <h2>Decision</h2>
+            {caseData.decisions.map((d) => (
               <button
-                disabled={!decision}
-                onClick={() => setScreen("feedback")}
+                key={d.id}
+                onClick={() => setDecision(d.id)}
+                className={decision === d.id ? "choice selected" : "choice"}
               >
-                Submit
+                {d.label}
               </button>
-            </div>
+            ))}
+            <button onClick={() => setScreen("feedback")}>Submit</button>
           </section>
         )}
 
         {screen === "feedback" && (
           <section className="card">
-            <h2>Feedback</h2>
+            <h2>Score: {score}%</h2>
 
-            <div className="scoreBox">
-              <span>Decision Quality</span>
-              <strong>{score}%</strong>
-            </div>
+            <h3>Confidence Analysis</h3>
+            <p>
+              {score >= 80
+                ? "Well supported"
+                : "Partially supported"}
+            </p>
 
-            <div className="feedbackGrid">
-              <div>
-                <h3>Selected information</h3>
-                {selectedClues.length ? (
-                  selectedClues.map((id) => {
-                    const clue = caseData.clues.find((c) => c.id === id);
-                    return (
-                      <p key={id} className="feedbackItem">
-                        <b>{clue.label}</b>
-                        <br />
-                        {clue.feedback}
-                      </p>
-                    );
-                  })
-                ) : (
-                  <p className="feedbackItem">No information selected.</p>
-                )}
-              </div>
+            <h3>Missed Opportunities</h3>
+            {missedClues.map((c) => (
+              <p key={c.id}>{c.label}</p>
+            ))}
 
-              <div>
-                <h3>Decision</h3>
-                {decision ? (
-                  <p className="feedbackItem">
-                    <b>{caseData.decisions.find((d) => d.id === decision).label}</b>
-                    <br />
-                    {caseData.decisions.find((d) => d.id === decision).feedback}
-                  </p>
-                ) : (
-                  <p className="feedbackItem">
-                    Time expired before a final decision was submitted.
-                  </p>
-                )}
-
-                <h3>Confidence Analysis</h3>
-                <p className="feedbackItem">
-                  Your decision was {score >= 80 ? "well-supported" : "partially supported"} by the information gathered.
-                </p>
-
-                <h3>Missed Opportunities</h3>
-                {missedClues.map((clue) => (
-                  <p key={clue.id} className="feedbackItem">
-                    <b>{clue.label}</b>
-                    <br />
-                    {clue.feedback}
-                  </p>
-                ))}
-              </div>
-            </div>
-
-            <div className="actions">
-              <button onClick={reset}>Try Again</button>
-            </div>
+            <button onClick={reset}>Try Again</button>
           </section>
         )}
       </section>
