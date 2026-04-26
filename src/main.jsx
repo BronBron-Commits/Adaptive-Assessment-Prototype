@@ -108,7 +108,13 @@ function App() {
     const decisionScore =
       caseData.decisions.find((d) => d.id === decision)?.value || 0;
 
-    return Math.min(100, clueScore + decisionScore);
+    let total = Math.floor((clueScore * 0.6) + (decisionScore * 0.4));
+
+    if (selectedClues.length < 2) {
+      total -= 10;
+    }
+
+    return Math.max(0, Math.min(100, total));
   }, [selectedClues, decision]);
 
   function begin() {
@@ -123,6 +129,11 @@ function App() {
       return [...current, id];
     });
   }
+
+  const missedClues = caseData.clues
+    .filter((clue) => !selectedClues.includes(clue.id))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 2);
 
   function reset() {
     setScreen("intro");
@@ -274,6 +285,20 @@ function App() {
                     Time expired before a final decision was submitted.
                   </p>
                 )}
+
+                <h3>Confidence Analysis</h3>
+                <p className="feedbackItem">
+                  Your decision was {score >= 80 ? "well-supported" : "partially supported"} by the information gathered.
+                </p>
+
+                <h3>Missed Opportunities</h3>
+                {missedClues.map((clue) => (
+                  <p key={clue.id} className="feedbackItem">
+                    <b>{clue.label}</b>
+                    <br />
+                    {clue.feedback}
+                  </p>
+                ))}
               </div>
             </div>
 
